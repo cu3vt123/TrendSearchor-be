@@ -114,11 +114,10 @@ public class OpenRouterClient {
      * @param messages danh sách message (role + content) do FE gửi lên
      * @param jsonMode true nếu cần OpenRouter trả JSON thuần (response_format = json_object)
      */
-    public String chatRaw(List<OpenRouterRequest.Message> messages, boolean jsonMode, Double temperature) {
+    public String chatRaw(List<OpenRouterRequest.Message> messages, boolean jsonMode) {
         OpenRouterRequest.OpenRouterRequestBuilder builder = OpenRouterRequest.builder()
                 .model(model)
-                .messages(messages)
-                .temperature(temperature); // null -> OpenRouter dùng mặc định; 0 -> tất định
+                .messages(messages);
         if (jsonMode) {
             builder.response_format(OpenRouterRequest.ResponseFormat.builder().type("json_object").build());
         }

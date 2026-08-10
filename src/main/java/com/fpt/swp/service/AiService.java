@@ -79,7 +79,7 @@ public class AiService {
                 .collect(Collectors.toList());
         boolean jsonMode = request.getResponseFormat() != null
                 && "json_object".equalsIgnoreCase(request.getResponseFormat().getType());
-        String content = openRouterClient.chatRaw(messages, jsonMode, request.getTemperature());
+        String content = openRouterClient.chatRaw(messages, jsonMode);
         return content != null ? content : "";
     }
 

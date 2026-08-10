@@ -22,8 +22,6 @@ public class OpenRouterRequest {
     private String model;
     private List<Message> messages;
     private ResponseFormat response_format;
-    /** Độ ngẫu nhiên (0 = tất định). Null thì OpenRouter dùng mặc định. */
-    private Double temperature;
 
     @Data
     @Builder
