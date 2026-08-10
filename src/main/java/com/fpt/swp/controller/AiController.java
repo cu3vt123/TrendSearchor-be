@@ -75,6 +75,29 @@ public class AiController {
         }
     }
 
+    // ─── Proxy chat (FE gọi AI mà không lộ OpenRouter key) ──────────────────────
+
+    /**
+     * Proxy tới OpenRouter để FE gọi AI mà KHÔNG cần nhúng API key vào bundle trình duyệt.
+     * Chỉ chịu rate-limit chống burst; KHÔNG trừ quota ngày vì một lượt tương tác chatbot
+     * có thể gọi nhiều lần (trừ mỗi lần sẽ hết quota ngay). Vẫn yêu cầu đăng nhập.
+     */
+    @PostMapping("/chat")
+    public ResponseEntity<java.util.Map<String, String>> aiChat(
+            @Valid @RequestBody AiChatRequest request,
+            @AuthenticationPrincipal UserDetails userDetails,
+            HttpServletRequest httpRequest) {
+        Long userId = authUtils.extractUserId(userDetails);
+        String key = userId != null ? "user:" + userId
+                : "ip:" + com.fpt.swp.util.RequestUtils.clientIp(httpRequest);
+        if (!aiRateLimiter.tryAcquire(key)) {
+            throw new RateLimitExceededException(
+                    "Too many AI requests. Please wait a moment before trying again.");
+        }
+        String content = aiService.proxyChat(request);
+        return ResponseEntity.ok(java.util.Map.of("content", content));
+    }
+
     // ─── Quota status ──────────────────────────────────────────────────────────
 
     /** FE gọi để hiển thị "còn X/limit lượt hôm nay". */

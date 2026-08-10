@@ -107,6 +107,23 @@ public class OpenRouterClient {
         }
     }
 
+    /**
+     * Gọi chat với danh sách messages tùy ý (dùng cho proxy {@code /api/ai/chat} — để FE
+     * gọi AI mà không lộ API key). Trả về text thuần từ AI, hoặc null nếu lỗi.
+     *
+     * @param messages danh sách message (role + content) do FE gửi lên
+     * @param jsonMode true nếu cần OpenRouter trả JSON thuần (response_format = json_object)
+     */
+    public String chatRaw(List<OpenRouterRequest.Message> messages, boolean jsonMode) {
+        OpenRouterRequest.OpenRouterRequestBuilder builder = OpenRouterRequest.builder()
+                .model(model)
+                .messages(messages);
+        if (jsonMode) {
+            builder.response_format(OpenRouterRequest.ResponseFormat.builder().type("json_object").build());
+        }
+        return doCall(builder.build());
+    }
+
     // -------------------------------------------------------------------------
 
     private String doCall(OpenRouterRequest request) {

@@ -63,6 +63,27 @@ public class AiService {
             + "If a parameter is not mentioned, use null. The query field must not be null.";
 
     // =========================================================================
+    // Proxy chat (để FE gọi AI mà KHÔNG lộ OpenRouter API key trong trình duyệt)
+    // =========================================================================
+
+    /**
+     * Proxy một lượt chat tới OpenRouter cho FE. Nhận messages từ FE, gọi LLM bằng key
+     * phía server, trả về text. Trả "" nếu LLM lỗi (FE tự xử lý fallback).
+     */
+    public String proxyChat(AiChatRequest request) {
+        List<OpenRouterRequest.Message> messages = request.getMessages().stream()
+                .map(m -> OpenRouterRequest.Message.builder()
+                        .role(m.getRole())
+                        .content(m.getContent())
+                        .build())
+                .collect(Collectors.toList());
+        boolean jsonMode = request.getResponseFormat() != null
+                && "json_object".equalsIgnoreCase(request.getResponseFormat().getType());
+        String content = openRouterClient.chatRaw(messages, jsonMode);
+        return content != null ? content : "";
+    }
+
+    // =========================================================================
     // FR-10.6: Abstract Assistant
     // =========================================================================
 
