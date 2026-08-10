@@ -104,6 +104,8 @@ public class SecurityConfig {
                 "http://localhost:*",
                 "https://trend-searchor-fe.vercel.app",
                 "https://trend-searchor-fe-*.vercel.app",
+                "https://trendsearchor.vercel.app",
+                "https://trendsearchor-*.vercel.app",
                 "https://trendsearchor-be-production.up.railway.app"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
